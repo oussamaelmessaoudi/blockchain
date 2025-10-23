@@ -1,0 +1,23 @@
+[
+    {
+        "index": 0,
+        "timestamp": "2024-01-01 00:00:00",
+        "data": "Genesis Block",
+        "previous_hash": "0",
+        "hash": "ab685cb88b6a0cbd2be27c14e4e2c4ac41b21377eb957a2da48f77f36da76d6a"
+    },
+    {
+        "index": 1,
+        "timestamp": "2024-01-01 01:00:00",
+        "data": "Alice sent 5 BTC to Bob",
+        "previous_hash": "ab685cb88b6a0cbd2be27c14e4e2c4ac41b21377eb957a2da48f77f36da76d6a",
+        "hash": "68f6d7d393ad1281fe9ac03eab2b536bcce503fabaeaf414f0f4676a7ec73cc5"
+    },
+    {
+        "index": 2,
+        "timestamp": "2024-01-01 02:00:00",
+        "data": "Bob sent 2 BTC to Charlie",
+        "previous_hash": "68f6d7d393ad1281fe9ac03eab2b536bcce503fabaeaf414f0f4676a7ec73cc5",
+        "hash": "38698515cb41752b4162e2b9bc76e6d26c17cccfbc2bf02a8d194d23bd9c8128"
+    }
+]
