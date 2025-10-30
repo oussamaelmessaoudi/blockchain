@@ -1,16 +1,15 @@
 import hashlib
 
 class Block:
-    def __init__(self,index,timestamp, data, previous_hash='',nonce=0):
+    def __init__(self,index,timestamp, data, previous_hash=''):
         self.index = index
         self.previous_hash = previous_hash
         self.timestamp = timestamp
         self.data = data
-        self.nonce = nonce
         self.hash = self.calculate_hash()
 
     def calculate_hash(self):
-        block_string = f"{self.index}{self.previous_hash}{self.timestamp}{self.data}{self.nonce}".encode()
+        block_string = f"{self.index}{self.previous_hash}{self.timestamp}{self.data}".encode()
         return hashlib.sha256(block_string).hexdigest()
 
     def remove_block(self, blockchain, index):
@@ -24,16 +23,7 @@ class Block:
             blockchain[i].hash = blockchain[i].calculate_hash()
         
         return blockchain
-    
-    def mine_block(self, difficulty):
-        target = '0' * difficulty
-        while True:
-            self.hash = self.calculate_hash()
-            if self.hash.startswith(target):
-                break
-            self.nonce += 1
-        return self.hash
-    
+        
 # Example usage:
 
 genesis_block = Block(0, '2024-01-01 00:00:00', 'Genesis Block', previous_hash='0')
@@ -49,11 +39,6 @@ blockchain.append(second_block)
 print(f"Block 1 Hash: {second_block.hash}")
 third_block = Block(2, '2024-01-01 02:00:00', 'Third Block', previous_hash=second_block.hash)
 print(f"Block 2 Hash before mining: {third_block.hash}")
-# Mining the third block with difficulty level 3
-third_block.mine_block(difficulty=3)
-blockchain.append(third_block)
-print(f"Block 2 Hash after mining: {third_block.hash}")
-print(f"Block 2 Nonce after mining: {third_block.nonce}")
 
 # Attempting to remove a block
 try:
