@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+import hashlib
+import time
+
+
+class Block:
+    """Représente un bloc simple avec preuve de travail (PoW)."""
+    def __init__(self, index, timestamp, data, previous_hash='0'):
+        self.index = index
+        self.timestamp = timestamp
+        self.data = data
+        self.previous_hash = previous_hash
+        self.nonce = 0
+        self.hash = self.calculate_hash()
+
+    def calculate_hash(self):
+        block_string = f"{self.index}{self.previous_hash}{self.timestamp}{self.data}{self.nonce}".encode()
+        return hashlib.sha256(block_string).hexdigest()
+
+    def mine_block(self, difficulty):
+        target = '0' * difficulty
+        while not self.hash.startswith(target):
+            self.nonce += 1
+            self.hash = self.calculate_hash()
+        return self.hash
+
+
+class Blockchain:
+    """Gestion très simple d'une chaîne de blocs avec méthodes de base."""
+    def __init__(self, difficulty=4):
+        self.difficulty = difficulty
+        self.chain = [self.create_genesis_block()]
+
+    def create_genesis_block(self):
+        # Horodatage fixe pour reproductibilité
+        return Block(0, '2024-01-01 00:00:00', 'Genesis Block', previous_hash='0')
+
+    def get_latest_block(self):
+        return self.chain[-1]
+
+    def add_block(self, new_block):
+        new_block.previous_hash = self.get_latest_block().hash
+        new_block.hash = new_block.mine_block(self.difficulty)
+        self.chain.append(new_block)
+
+    def is_chain_valid(self):
+        for i in range(1, len(self.chain)):
+            current_block = self.chain[i]
+            previous_block = self.chain[i - 1]
+            if current_block.hash != current_block.calculate_hash():
+                return False
+            if current_block.previous_hash != previous_block.hash:
+                return False
+        return True
+
+
+def main():
+    print("Démonstration ProofOfWork — création et minage de blocs")
+
+    bc = Blockchain(difficulty=4)
+    print(f"Genesis block hash: {bc.get_latest_block().hash}")
+
+    # Ajouter et miner un 2ème bloc
+    second_block = Block(1, '2024-01-01 01:00:00', 'Second Block')
+    bc.add_block(second_block)
+    print(f"Block 1 mined: index={second_block.index}, hash={second_block.hash}, nonce={second_block.nonce}")
+
+    # Ajouter et miner un 3ème bloc avec difficulté temporaire 3 pour démonstration
+    third_block = Block(2, '2024-01-01 02:00:00', 'Third Block')
+    old_diff = bc.difficulty
+    bc.difficulty = 3
+    bc.add_block(third_block)
+    bc.difficulty = old_diff
+    print(f"Block 2 mined: index={third_block.index}, hash={third_block.hash}, nonce={third_block.nonce}")
+
+    # Afficher la chaîne
+    print('\nBlockchain complète:')
+    for block in bc.chain:
+        print(f"Block {block.index}: data={block.data}, prev_hash={block.previous_hash}, hash={block.hash}")
+
+    # Vérification
+    valid = bc.is_chain_valid()
+    print(f"\nBlockchain valide ? {valid}")
+    assert valid, "La blockchain devrait être valide après minage correct"
+
+    # Test de falsification — modifier un bloc et vérifier que la chaîne devient invalide
+    print('\nTest de falsification: modification des données du bloc 1')
+    bc.chain[1].data = 'Tampered Data'
+    # Recalculer le hash du bloc modifié (simulateur d'attaque qui modifie le bloc sans re-miner la suite)
+    bc.chain[1].hash = bc.chain[1].calculate_hash()
+    print(f"Blockchain valide après falsification ? {bc.is_chain_valid()}")
+
+
+if __name__ == '__main__':
+    main()
+
+
+
