@@ -68,7 +68,7 @@ def main():
     # Ajouter et miner un 3ème bloc avec difficulté temporaire 3 pour démonstration
     third_block = Block(2, '2024-01-01 02:00:00', 'Third Block')
     old_diff = bc.difficulty
-    bc.difficulty = 3
+    bc.difficulty = 5
     bc.add_block(third_block)
     bc.difficulty = old_diff
     print(f"Block 2 mined: index={third_block.index}, hash={third_block.hash}, nonce={third_block.nonce}")
